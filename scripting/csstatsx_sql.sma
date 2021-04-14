@@ -1587,7 +1587,8 @@ public FMHook_OnEventPlayback(flags, invoker, eventid) {
 public EventHook_Damage(player)
 {
 	static damage_take;damage_take = read_data(2)
-	
+	static damage_save;damage_save = read_data(1)
+	static net_damage; net_damage = damage_take - damage_save;
 	// thanks voed
 	static weapon_id,last_hit,attacker,bool:alive
 	attacker = get_user_attacker(player,weapon_id,last_hit)
@@ -1604,7 +1605,7 @@ public EventHook_Damage(player)
 	
 	if(0 <= last_hit < HIT_END)
 	{
-		Stats_SaveHit(attacker,player,damage_take,weapon_id,last_hit)
+		Stats_SaveHit(attacker,player,net_damage,weapon_id,last_hit)
 	}
 	
 	if(!alive) {
