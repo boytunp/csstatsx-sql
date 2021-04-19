@@ -747,7 +747,8 @@ public plugin_init()
 	register_logevent("LogEventHooK_RoundEnd", 2, "1=Round_End") 
 	register_logevent("LogEventHooK_RoundStart", 2, "1=Round_Start") 
 	
-	register_event("Damage","EventHook_Damage","b","2!0")
+	//register_event("Damage","EventHook_Damage","b","2!0")
+	RegisterHam(Ham_TakeDamage, "player", "EventHook_PostDamage", 1);	
 	register_event("BarTime","EventHook_BarTime","be")
 	register_event("SendAudio","EventHook_SendAudio","a")
 	register_event("TextMsg","EventHook_TextMsg","a")
@@ -1584,6 +1585,35 @@ public FMHook_OnEventPlayback(flags, invoker, eventid) {
 //
 // Регистрация попадания
 //
+public EventHook_PostDamage(iVictim, iInflictor, iAttacker, Float:incDamage)
+{
+	static Float: netDamage;
+    pev(iVictim, pev_dmg_take, netDamage);
+	attacker = get_user_attacker(player,weapon_id,last_hit)
+	alive = (is_user_alive(victim) ? true : false)
+    client_print( victim , print_chat , "Gelen Damaj=%f    Net Damaj=%f" , incDamage, netDamage);
+
+	if(!is_user_connected(attacker)) {
+		
+		if(!alive) {
+			Stats_SaveKill(0,victim,0,0)
+		}
+		
+		return HAM_HANDLED
+	}
+	
+	if(0 <= last_hit < HIT_END)
+	{
+		Stats_SaveHit(attacker,victim,netDamage,weapon_id,last_hit)
+	}
+	
+	if(!alive) {
+		Stats_SaveKill(attacker,victim,weapon_id,last_hit)
+	}
+
+	return HAM_HANDLED
+	
+}
 public EventHook_Damage(player)
 {
 	static damage_take;damage_take = read_data(2)
