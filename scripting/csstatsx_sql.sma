@@ -1585,9 +1585,10 @@ public FMHook_OnEventPlayback(flags, invoker, eventid) {
 //
 // Регистрация попадания
 //
-public EventHook_PostDamage(iVictim, iInflictor, iAttacker, Float:incDamage)
+public EventHook_PostDamage(victim, inflictor, attacker, Float:incDamage)
 {
 	static Float: netDamage;
+	static weapon_id,last_hit,bool:alive;
     pev(iVictim, pev_dmg_take, netDamage);
 	attacker = get_user_attacker(player,weapon_id,last_hit)
 	alive = (is_user_alive(victim) ? true : false)
